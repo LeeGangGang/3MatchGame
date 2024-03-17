@@ -9,6 +9,10 @@ public class CardInfoPopup : APopup
     [SerializeField] Button upgradeBtn;
 
     [SerializeField] Text nameTxt;
+
+    [SerializeField] Image backImg;
+    [SerializeField] Color[] gradeColors;
+
     [SerializeField] Image cardIconImg;
     [SerializeField] Text levelTxt;
 
@@ -47,6 +51,7 @@ public class CardInfoPopup : APopup
 
     void UpdateUI(int code)
     {
+        var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
         var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
 
         int level;
@@ -66,6 +71,9 @@ public class CardInfoPopup : APopup
         SetIconImage(level);
         SetCardInfo(level);
         SetCardLevel(level, exp);
+
+        int grade = cdm.GetCardData(code).Grade;
+        SetGradeImg(grade);
     }
 
     public override void Exit()
@@ -185,5 +193,10 @@ public class CardInfoPopup : APopup
 
             bot.SetActive(false);
         }
+    }
+
+    void SetGradeImg(int grade)
+    {
+        backImg.color = gradeColors[grade];
     }
 }

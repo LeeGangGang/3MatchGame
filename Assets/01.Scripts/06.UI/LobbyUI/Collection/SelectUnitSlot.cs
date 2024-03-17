@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class SelectUnitSlot : MonoBehaviour
 {
+    [SerializeField] Image backImg;
+    [SerializeField] Color[] gradeColors;
+
     [SerializeField] Image unitIconImg;
 
     [SerializeField] Image[] starImgs;
@@ -30,13 +33,15 @@ public class SelectUnitSlot : MonoBehaviour
         });
     }
 
-    public void Enter(eUnit type, int level)
+    public void Enter(eUnit type, int grade, int level)
     {
         currUnit = type;
 
         SetUnitIconImage(currUnit);
 
         SetStarImage(level);
+
+        SetGradeImg(grade);
     }
 
     void SetUnitIconImage(eUnit type)
@@ -70,5 +75,10 @@ public class SelectUnitSlot : MonoBehaviour
             starImgs[1].sprite = AtlasManager.Inst.GetSprite(eAtlasType.UI, "Star_1");
             starImgs[2].sprite = AtlasManager.Inst.GetSprite(eAtlasType.UI, "Star_1");
         }
+    }
+
+    void SetGradeImg(int grade)
+    {
+        backImg.color = gradeColors[grade];
     }
 }

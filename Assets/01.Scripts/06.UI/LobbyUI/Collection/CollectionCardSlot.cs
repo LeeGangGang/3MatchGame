@@ -10,6 +10,9 @@ public class CollectionCardSlot : MonoBehaviour
 
     [SerializeField] GameObject noActiveImg;
 
+    [SerializeField] Image backImg;
+    [SerializeField] Color[] gradeColors;
+
     [SerializeField] Image iconImg;
     [SerializeField] Text levelTxt;
 
@@ -29,13 +32,15 @@ public class CollectionCardSlot : MonoBehaviour
         });
     }
 
-    public void Enter(int level, int currExp)
+    public void Enter(int level, int grade, int currExp)
     {
         SetIconImage(code, level);
         SetLevelText(level);
         SetExp(level, currExp);
 
         SetOpenCard(level != -1);
+
+        SetGradeImg(grade);
     }
 
     public void Exit()
@@ -92,5 +97,10 @@ public class CollectionCardSlot : MonoBehaviour
     void SetOpenCard(bool nonOpen)
     {
         noActiveImg.gameObject.SetActive(!nonOpen);
+    }
+
+    void SetGradeImg(int grade)
+    {
+        backImg.color = gradeColors[grade];
     }
 }

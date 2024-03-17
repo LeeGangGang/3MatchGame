@@ -54,12 +54,14 @@ public class UnitChangePopup : APopup
 
     void UpdateUI()
     {
+        var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
         var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
         int idx = 0;
         foreach (var unit in mudm.GetMyUnSelectUnitDataList())
         {
             var slot = GetUnitSlot(unit.Key);
-            slot.Enter(unit.Key, unit.Value[0]);
+            int grade = udm.GetUnitData(unit.Key).Grade;
+            slot.Enter(unit.Key, grade, unit.Value[0]);
             slot.SetSelect(idx == 0);
             slot.gameObject.transform.SetSiblingIndex(idx);
 

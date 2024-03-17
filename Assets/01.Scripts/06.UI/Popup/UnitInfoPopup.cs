@@ -12,6 +12,9 @@ public class UnitInfoPopup : APopup
     [SerializeField] Text nameTxt;
     [SerializeField] Image unitIconImg;
 
+    [SerializeField] Image backImg;
+    [SerializeField] Color[] gradeColors;
+
     [SerializeField] Image[] starImgs = new Image[3];
     [SerializeField] Scrollbar expSb;
     [SerializeField] Text expTxt;
@@ -87,6 +90,9 @@ public class UnitInfoPopup : APopup
         
         // 선택한 유닛일 경우에만
         changeBtn.gameObject.SetActive(mudm.GetMySelectUnitDataList().Keys.ToList().Contains(type));
+
+        int grade = udm.GetUnitData(unit).Grade;
+        SetGradeImg(grade);
     }
 
     void SetUnitInfo(UnitData data, int level)
@@ -168,6 +174,11 @@ public class UnitInfoPopup : APopup
             skill_1_IconImg.sprite = AtlasManager.Inst.GetSprite(eAtlasType.Skill, data.Name);
             skill_1_BlockImg.sprite = AtlasManager.Inst.GetSprite(eAtlasType.Block, string.Format("item_{0:00}", (int)data.Color));
         }
+    }
+
+    void SetGradeImg(int grade)
+    {
+        backImg.color = gradeColors[grade];
     }
 
     void OnClickUpgradeBtn()

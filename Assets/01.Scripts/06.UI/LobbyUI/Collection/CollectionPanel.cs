@@ -25,14 +25,6 @@ public class CollectionPanel : ALobbyPanel
 
         foreach (var selectUnitSlot in selectUnitSlotList)
             selectUnitSlot.Init();
-
-        var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
-
-        foreach (var cardData in cdm.GetCardDataList())
-        {
-            var slot = GetCollectionCardSlot(cardData.Key);
-            slot.Enter(-1, 0);
-        }
     }
 
     public override void Enter()
@@ -62,32 +54,43 @@ public class CollectionPanel : ALobbyPanel
     public override void UpdateUI()
     {
         // Unit Info Update
+        var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
         var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
         int updateCollectSlotCnt = 0;
         foreach (var myUnit in mudm.GetMyUnitCollectionDataList())
         {
+            int grade = udm.GetUnitData(myUnit.Key).Grade;
             if (mudm.GetMySelectUnitDataList().Keys.Contains(myUnit.Key))
             {
                 int unitIdx = mudm.GetMySelectUnitDataList()[myUnit.Key] - 1;
-                selectUnitSlotList[unitIdx].Enter(myUnit.Key, myUnit.Value[0]);
+                selectUnitSlotList[unitIdx].Enter(myUnit.Key, grade, myUnit.Value[0]);
             }
             else
             {
                 var slot = GetCollectionUnitSlot(updateCollectSlotCnt);
-                slot.Enter(myUnit.Key, myUnit.Value[0]);
+                slot.Enter(myUnit.Key, grade, myUnit.Value[0]);
                 updateCollectSlotCnt++;
             }
         }
 
         // Card Info Update
         int cardIdx = 0;
+        var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
         var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
-        foreach (var myCard in mcdm.GetMyCardCollectionDataList())
+        Dictionary<int, int[]> myCards = mcdm.GetMyCardCollectionDataList();
+        foreach (var cardData in cdm.GetCardDataList())
         {
-            var slot = collectionCardSlotList[myCard.Key];
-            slot.Enter(myCard.Value[0], myCard.Value[1]);
+            var slot = GetCollectionCardSlot(cardData.Key);
             slot.gameObject.transform.SetSiblingIndex(cardIdx);
-            cardIdx++;
+            if (myCards.ContainsKey(cardData.Key))
+            {
+                slot.Enter(myCards[cardData.Key][0], cardData.Value.Grade, myCards[cardData.Key][1]);
+                cardIdx++;
+            }
+            else
+            {
+                slot.Enter(-1, cardData.Value.Grade, 0);
+            }
         }
     }
 
