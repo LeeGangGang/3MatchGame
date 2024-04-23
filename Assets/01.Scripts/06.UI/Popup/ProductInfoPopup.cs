@@ -32,10 +32,6 @@ public class ProductInfoPopup : APopup
     public void Enter(eProductID id, Sprite spr, Action<eProductID> onComplete)
     {
         productId = id;
-
-        SetNameText();
-        SetIconImage(spr);
-
         string price = string.Empty;
         var sdm = (StoreDataModel)DataModelController.Inst.GetDataModel(eDataModel.StoreDataModel);
         var data = sdm.GetData(productId);
@@ -46,11 +42,13 @@ public class ProductInfoPopup : APopup
         else
             price = "AD";
 
-        SetPriceText(price);
-
         buyEvent = onComplete;
-
-        base.Enter();
+        base.Enter(() =>
+        {
+            SetNameText();
+            SetIconImage(spr);
+            SetPriceText(price);
+        });
     }
 
     public override void Exit()

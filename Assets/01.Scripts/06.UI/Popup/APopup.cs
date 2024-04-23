@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +17,7 @@ public abstract class APopup : MonoBehaviour
         
     }
 
-    public virtual void Enter()
+    public virtual void Enter(Action onComplete)
     {
         isEnter = true;
 
@@ -26,8 +27,13 @@ public abstract class APopup : MonoBehaviour
             UIManager.Inst.Popup.OpenPopupStk.Push(this);
         }
         this.gameObject.SetActive(true);
+
         mainPanel.transform.localScale = Vector3.zero;
-        mainPanel.transform.DOScale(1f, 0.1f);
+        mainPanel.transform.DOScale(1f, 0.1f).OnComplete(() =>
+        {
+            // UI 적용/변경 : 메인 패널 스케일 변경 중 스크롤뷰 Content 적용시 Content 포지션 원점 적용이 안되는 현상이 있어 수정
+            onComplete?.Invoke();
+        });
     }
 
     public virtual void Exit()

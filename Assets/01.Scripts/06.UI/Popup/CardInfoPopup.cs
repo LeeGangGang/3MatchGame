@@ -44,9 +44,10 @@ public class CardInfoPopup : APopup
     {
         cardCode = code;
 
-        UpdateUI(cardCode);
-
-        base.Enter();
+        base.Enter(() =>
+        {
+            UpdateUI(cardCode);
+        });
     }
 
     void UpdateUI(int code)
