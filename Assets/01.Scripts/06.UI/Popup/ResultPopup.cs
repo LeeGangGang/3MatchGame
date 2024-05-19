@@ -23,10 +23,8 @@ public class ResultPopup : APopup
 
     public void Enter(bool isClear)
     {
-        base.Enter(() =>
-        {   
-            SetResultText(isClear);
-        });
+        SetResultText(isClear);
+        base.Enter();
     }
 
     public override void Exit()

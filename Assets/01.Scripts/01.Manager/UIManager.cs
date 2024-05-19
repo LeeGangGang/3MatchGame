@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour
     public PopupController Popup => _popupController;
 
     [Header("GlobalPanel")]
-    [SerializeField] GlobalUI _global = null;
+    [SerializeField] GlobalPanel _global = null;
 
     [Header("LobbyPanel")]
     [SerializeField] LobbyUI _lobby = null;
@@ -123,9 +123,9 @@ public class UIManager : MonoBehaviour
         _global.SetActiveLoading(isActive);
     }
 
-    public void SetAddItemPanel(eProductType type, params int[] items)
+    public void SetAddItemPanel(Dictionary<eProductType, Dictionary<int, int>> addItems)
     {
-        _global.SetAddItemPanel(type, items);
+        _global.SetAddItemPanel(addItems);
     }
 
     public void SetUpdateLobbyUI()

@@ -13,30 +13,59 @@ public class AddItemDirectingPanel : MonoBehaviour, IPointerDownHandler
 
     [SerializeField] float fadeTime;
 
-    public void Enter(eProductType type, params int[] items)
+    public void Enter(Dictionary<eProductType, Dictionary<int, int>> addItems)
     {
         int idx = 0;
-        foreach (var item in items)
+        foreach (var addItem in addItems)
         {
             Sprite spr = null;
-            int grade = -1;
-            if (type == eProductType.Unit)
+            int[] value = new int[2];
+            if (addItem.Key == eProductType.Gold)
+            {
+                spr = AtlasManager.Inst.GetSprite(eAtlasType.UI, "coin_05");
+                value[0] = addItem.Value[0];
+
+                itemList[idx].Init(addItem.Key, spr, value);
+                idx++;
+            }
+            else if (addItem.Key == eProductType.Dia)
+            {
+                spr = AtlasManager.Inst.GetSprite(eAtlasType.UI, "dia");
+                value[0] = addItem.Value[0];
+
+                itemList[idx].Init(addItem.Key, spr, value);
+                idx++;
+            }
+            else if (addItem.Key == eProductType.Unit)
             {
                 var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
-                var data = udm.GetUnitData((eUnit)item);
-                spr = AtlasManager.Inst.GetSprite(eAtlasType.Unit, data.Name);
-                grade = data.Grade;
+                foreach (var unit in addItem.Value)
+                {
+                    var data = udm.GetUnitData((eUnit)unit.Key);
+                    spr = AtlasManager.Inst.GetSprite(eAtlasType.Unit, data.Name);
+
+                    value[0] = unit.Value;
+                    value[1] = data.Grade;
+
+                    itemList[idx].Init(addItem.Key, spr, value);
+                    idx++;
+                }
             }
-            else
+            else if (addItem.Key == eProductType.Card)
             {
                 var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
-                var data = cdm.GetCardData(item);
-                spr = AtlasManager.Inst.GetSprite(eAtlasType.Card, string.Format("card{0}{1}", data.Code, data.Grade));
-                grade = data.Grade;
-            }
+                foreach (var card in addItem.Value)
+                {
+                    var data = cdm.GetCardData(card.Key);
+                    spr = AtlasManager.Inst.GetSprite(eAtlasType.Card, string.Format("card{0}{1}", data.Code, data.Grade));
 
-            itemList[idx].Init(spr, grade);
-            idx++;
+                    value[0] = card.Value;
+                    value[1] = data.Grade;
+
+                    itemList[idx].Init(addItem.Key, spr, value);
+                    idx++;
+                }
+            }
         }
 
         gameObject.SetActive(true);
@@ -61,7 +90,8 @@ public class AddItemDirectingPanel : MonoBehaviour, IPointerDownHandler
     IEnumerator ShowAnim(int cnt)
     {
         bool endFx = false;
-        mainImg.DOColor(Color.black, fadeTime).OnComplete(() =>
+        Color fabeColor = new Color(0f, 0f, 0f, 0.9f);
+        mainImg.DOColor(fabeColor, fadeTime).OnComplete(() =>
         {
             endFx = true;
         });

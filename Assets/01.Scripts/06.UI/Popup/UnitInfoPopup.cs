@@ -57,10 +57,8 @@ public class UnitInfoPopup : APopup
 
     public void Enter(eUnit type)
     {
-        base.Enter(() =>
-        {
-            UpdateUI(type);
-        });
+        UpdateUI(type);
+        base.Enter();
     }
 
     public override void Exit()

@@ -12,6 +12,12 @@ public enum eProductType
     Card,
 }
 
+public class AddItem
+{
+    public int Key;
+    public int Count;
+}
+
 public class StorePanel : ALobbyPanel
 {
     [SerializeField] Toggle goldTabTg;
@@ -105,11 +111,19 @@ public class StorePanel : ALobbyPanel
         var shopData = sdm.GetData(id);
         int price = shopData.price;
         int cnt = shopData.count;
+        
+        Dictionary<eProductType, Dictionary<int, int>> addItemsList = new Dictionary<eProductType, Dictionary<int, int>>();
         switch (id)
         {
             case eProductID.Gold200:
-                // ADS 연동
-                mwdm.Gold += cnt;
+                {
+                    // ADS 연동
+                    Dictionary<int, int> additems = new Dictionary<int, int>();
+                    additems.Add(0, cnt);
+                    addItemsList.Add(eProductType.Gold, additems);
+
+                    mwdm.Gold += cnt;
+                }
                 break;
             case eProductID.Gold1000:
             case eProductID.Gold2000:
@@ -117,20 +131,36 @@ public class StorePanel : ALobbyPanel
             case eProductID.Gold10000:
                 if (mwdm.Dia >= price)
                 {
+                    Dictionary<int, int> additems = new Dictionary<int, int>();
+                    additems.Add(0, cnt);
+                    addItemsList.Add(eProductType.Gold, additems);
+
                     mwdm.Gold += cnt;
                     mwdm.Dia -= price;
                 }
                 break;
             case eProductID.Dia10:
-                // ADS 연동
-                mwdm.Dia += cnt;
+                {
+                    // ADS 연동
+                    Dictionary<int, int> additems = new Dictionary<int, int>();
+                    additems.Add(0, cnt);
+                    addItemsList.Add(eProductType.Dia, additems);
+
+                    mwdm.Dia += cnt;
+                }
                 break;
             case eProductID.Dia100:
             case eProductID.Dia600:
             case eProductID.Dia1500:
             case eProductID.Dia5500:
-                // 인 앱 연동
-                mwdm.Dia += cnt;
+                {
+                    // 인 앱 연동
+                    Dictionary<int, int> additems = new Dictionary<int, int>();
+                    additems.Add(0, cnt);
+                    addItemsList.Add(eProductType.Dia, additems);
+
+                    mwdm.Dia += cnt;
+                }
                 break;
             case eProductID.NormalCardPack:
             case eProductID.MagicCardPack:
@@ -140,10 +170,22 @@ public class StorePanel : ALobbyPanel
                 {
                     var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
                     int code = scdm.GetCardCode(id);
+                    if (addItemsList.ContainsKey(eProductType.Card))
+                    {
+                        if (addItemsList[eProductType.Card].ContainsKey(code))
+                            addItemsList[eProductType.Card][code]++;
+                        else
+                            addItemsList[eProductType.Card].Add(code, 1);
+                    }
+                    else
+                    {
+                        Dictionary<int, int> additems = new Dictionary<int, int>();
+                        additems.Add(code, 1);
+                        addItemsList.Add(eProductType.Card, additems);
+                    }
+
                     mcdm.SetAddCard(code, 1);
                     mwdm.Gold -= price;
-                    
-                    UIManager.Inst.SetAddItemPanel(eProductType.Card, code);
                 }
                 break;
             case eProductID.NormalUnitPack:
@@ -154,10 +196,22 @@ public class StorePanel : ALobbyPanel
                 {
                     var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
                     eUnit code = scdm.GetUnitCode(id);
+                    if (addItemsList.ContainsKey(eProductType.Unit))
+                    {
+                        if (addItemsList[eProductType.Unit].ContainsKey((int)code))
+                            addItemsList[eProductType.Unit][(int)code]++;
+                        else
+                            addItemsList[eProductType.Unit].Add((int)code, 1);
+                    }
+                    else
+                    {
+                        Dictionary<int, int> additems = new Dictionary<int, int>();
+                        additems.Add((int)code, 1);
+                        addItemsList.Add(eProductType.Unit, additems);
+                    }
+
                     mudm.SetAddUnit(code, 1);
                     mwdm.Gold -= price;
-
-                    UIManager.Inst.SetAddItemPanel(eProductType.Unit, (int)code);
                 }
                 break;
             case eProductID.NormalCardPack_x10:
@@ -181,11 +235,26 @@ public class StorePanel : ALobbyPanel
                     {
                         int code = scdm.GetCardCode(id);
                         addCardList[i] = code;
-                        mcdm.SetAddCard(code, 1);
-                    }
-                    mwdm.Gold -= price;
 
-                    UIManager.Inst.SetAddItemPanel(eProductType.Card, addCardList);
+                        if (addItemsList.ContainsKey(eProductType.Card))
+                        {
+                            if (addItemsList[eProductType.Card].ContainsKey(code))
+                                addItemsList[eProductType.Card][code]++;
+                            else
+                                addItemsList[eProductType.Card].Add(code, 1);
+                        }
+                        else
+                        {
+                            Dictionary<int, int> additems = new Dictionary<int, int>();
+                            additems.Add(code, 1);
+                            addItemsList.Add(eProductType.Card, additems);
+                        }
+                    }
+
+                    foreach (var card in addItemsList[eProductType.Card])
+                        mcdm.SetAddCard(card.Key, card.Value);
+
+                    mwdm.Gold -= price;
                 }
                 break;
             case eProductID.NormalUnitPack_x10:
@@ -209,14 +278,32 @@ public class StorePanel : ALobbyPanel
                     { 
                         eUnit code = scdm.GetUnitCode(id);
                         addCardList[i] = (int)code;
-                        mudm.SetAddUnit(code, 1);
-                    }
-                    mwdm.Gold -= price;
 
-                    UIManager.Inst.SetAddItemPanel(eProductType.Unit, addCardList);
+                        if (addItemsList.ContainsKey(eProductType.Unit))
+                        {
+                            if (addItemsList[eProductType.Unit].ContainsKey((int)code))
+                                addItemsList[eProductType.Unit][(int)code]++;
+                            else
+                                addItemsList[eProductType.Unit].Add((int)code, 1);
+                        }
+                        else
+                        {
+                            Dictionary<int, int> additems = new Dictionary<int, int>();
+                            additems.Add((int)code, 1);
+                            addItemsList.Add(eProductType.Unit, additems);
+                        }
+                    }
+
+                    foreach (var unit in addItemsList[eProductType.Unit])
+                        mudm.SetAddUnit((eUnit)unit.Key, unit.Value);
+
+                    mwdm.Gold -= price;
                 }
                 break;
         }
+
+        if (addItemsList.Count > 0)
+            UIManager.Inst.SetAddItemPanel(addItemsList);
 
         UIManager.Inst.SetActiveLoading(false);
     }

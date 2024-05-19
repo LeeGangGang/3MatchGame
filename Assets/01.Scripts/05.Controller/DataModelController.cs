@@ -10,6 +10,7 @@ public enum eDataModel
     SkillDataModel,
     StageInfoDataModel,
     CardDataModel,
+    MissionDataModel,
 
     StoreDataModel,
     StoreChartDataModel,
@@ -18,6 +19,7 @@ public enum eDataModel
     MyUnitCollectionDataModel,
     MyCardCollectionDataModel,
     MyWealthDataModel,
+    MyMissionDataModel,
 }
 
 public class DataModelController : MonoBehaviour

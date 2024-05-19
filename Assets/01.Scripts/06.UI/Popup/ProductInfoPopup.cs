@@ -43,12 +43,11 @@ public class ProductInfoPopup : APopup
             price = "AD";
 
         buyEvent = onComplete;
-        base.Enter(() =>
-        {
-            SetNameText();
-            SetIconImage(spr);
-            SetPriceText(price);
-        });
+
+        SetNameText();
+        SetIconImage(spr);
+        SetPriceText(price);
+        base.Enter();
     }
 
     public override void Exit()

@@ -1,10 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LobbyPanel : ALobbyPanel
 {
     [SerializeField] StageBtnSV stageSv;
+
+    [SerializeField] Button missionBtn;
+    [SerializeField] Button achieveBtn;
+    [SerializeField] Button battlepassBtn;
 
     public override void Init()
     {
@@ -13,6 +18,10 @@ public class LobbyPanel : ALobbyPanel
 
         var sdm = (StageInfoDataModel)DataModelController.Inst.GetDataModel(eDataModel.StageInfoDataModel);
         stageSv.Init(sdm.GetStageTotalCount());
+
+        missionBtn.onClick.AddListener(OnClickMissionBtn);
+        achieveBtn.onClick.AddListener(OnClickAchieveBtn);
+        battlepassBtn.onClick.AddListener(OnClickBattlePassBtn);
     }
 
     public override void Enter()
@@ -35,6 +44,21 @@ public class LobbyPanel : ALobbyPanel
     }
 
     public override void UpdateUI()
+    {
+
+    }
+
+    void OnClickMissionBtn()
+    {
+        UIManager.Inst.Popup.OpenMissionPopup();
+    }
+
+    void OnClickAchieveBtn()
+    {
+
+    }
+
+    void OnClickBattlePassBtn()
     {
 
     }

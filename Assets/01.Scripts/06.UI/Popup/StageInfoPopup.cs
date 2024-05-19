@@ -38,12 +38,10 @@ public class StageInfoPopup : APopup
     public void Enter(int num)
     {
         stageNum = num;
-        base.Enter(() =>
-        {
-            SetStageNumText(stageNum);
-            SetEnemyInfo(stageNum);
-            SetMapBlockColorInfo(stageNum);
-        });
+        SetStageNumText(stageNum);
+        SetEnemyInfo(stageNum);
+        SetMapBlockColorInfo(stageNum);
+        base.Enter();
     }
 
     public override void Exit()

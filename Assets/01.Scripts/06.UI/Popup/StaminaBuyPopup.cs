@@ -32,10 +32,8 @@ public class StaminaBuyPopup : APopup
 
     public void Enter()
     {
-        base.Enter(() =>
-        {
-            UpdateUI();
-        });
+        UpdateUI();
+        base.Enter();
     }
 
     public override void Exit()

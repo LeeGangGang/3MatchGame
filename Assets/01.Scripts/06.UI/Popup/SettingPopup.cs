@@ -28,10 +28,8 @@ public class SettingPopup : APopup
 
     public void Enter(bool isInGame)
     {
-        base.Enter(() =>
-        {
-            exitBtn.gameObject.SetActive(isInGame);
-        });
+        exitBtn.gameObject.SetActive(isInGame);
+        base.Enter();
     }
 
     public override void Exit()

@@ -37,11 +37,9 @@ public class UnitChangePopup : APopup
     {
         beforeUnit = before;
         onChangeEvent = onChange;
-
-        base.Enter(() =>
-        {
-            UpdateUI();
-        });
+        
+        UpdateUI();
+        base.Enter();
     }
 
     public override void Exit()

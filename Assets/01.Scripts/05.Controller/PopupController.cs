@@ -22,6 +22,8 @@ public class PopupController : MonoBehaviour
 
     [SerializeField] StaminaBuyPopup staminaBuyPopup;
 
+    [SerializeField] MissionPopup missionPopup;
+
     // Update is called once per frame
     void Update()
     {
@@ -51,6 +53,8 @@ public class PopupController : MonoBehaviour
 
         productInfoPopup.Init();
         staminaBuyPopup.Init();
+
+        missionPopup.Init();
     }
     
     public void ExitAll()
@@ -104,5 +108,10 @@ public class PopupController : MonoBehaviour
     public void OpenLifeBuyPopup()
     {
         staminaBuyPopup.Enter();
+    }
+
+    public void OpenMissionPopup()
+    {
+        missionPopup.Enter();
     }
 }

@@ -17,7 +17,7 @@ public abstract class APopup : MonoBehaviour
         
     }
 
-    public virtual void Enter(Action onComplete)
+    public virtual void Enter(Action onComplete = null)
     {
         isEnter = true;
 
