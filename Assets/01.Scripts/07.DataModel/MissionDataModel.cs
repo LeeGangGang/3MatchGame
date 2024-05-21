@@ -45,6 +45,13 @@ public class MissionDataModel : ADataModel
         }
 
         myMissionData.Load();
+        if (myMissionData.IsReSetMissionData())
+        {
+            GetKeys(eMissionKind.Login).ToList().ForEach(key =>
+            {
+                myMissionData.SetAddMission(key, 1);
+            });
+        }
     }
 
     public MissionData GetData(int key)

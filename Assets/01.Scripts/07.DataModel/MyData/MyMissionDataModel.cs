@@ -27,8 +27,6 @@ public class MyMissionDataModel : ADataModel
                 myMissionList.Add(key, cnt);
             }
         }
-
-        ReSetMissionData();
     }
 
     public void Save()
@@ -84,18 +82,25 @@ public class MyMissionDataModel : ADataModel
         return missions.ToDictionary(x => x.Key, x => x.Value);
     }
 
-    public void ReSetMissionData()
+    public Dictionary<int, int> GetData(eMissionKind kind)
     {
+        var missions = myMissionList.Where(data => data.Key % 100 == (int)kind);
+        return missions.ToDictionary(x => x.Key, x => x.Value);
+    }
+
+    public bool IsReSetMissionData()
+    {
+        bool isReset = false;
+
         // MEMO : 별도의 서버 없이 미션 초기화
         if (PlayerPrefs.HasKey(lastAccessDateKey))
         {
             DateTime lastAccessDate = Convert.ToDateTime(PlayerPrefs.GetString(lastAccessDateKey));
-            DateTime todayDate = DateTime.UtcNow.Date;
-            if (todayDate > lastAccessDate)
+            DateTime todayDate = DateTime.UtcNow;
+            if (todayDate.DayOfYear > lastAccessDate.DayOfYear)
             {
-                // 로그인 1회 추가
-                //
-                
+                isReset = true;
+
                 // 일간 초기화
                 Debug.Log("Daliy Mission Reset");
                 GetData(eMissionType.Daily).Keys.ToList().ForEach(key =>
@@ -108,7 +113,7 @@ public class MyMissionDataModel : ADataModel
                 DateTime todayWeekDate = todayDate.AddDays(-subDay);
                 subDay = lastAccessDate.DayOfWeek == DayOfWeek.Sunday ? 6 : (int)lastAccessDate.DayOfWeek - 1;
                 DateTime lastWeekDate = lastAccessDate.AddDays(-subDay);
-                if (todayWeekDate > lastWeekDate)
+                if (todayWeekDate.DayOfYear > lastWeekDate.DayOfYear)
                 {
                     Debug.Log("Weekly Mission Reset");
                     GetData(eMissionType.Weekly).Keys.ToList().ForEach(key =>
@@ -128,13 +133,15 @@ public class MyMissionDataModel : ADataModel
                 }
 
                 PlayerPrefs.SetString(lastAccessDateKey, DateTime.UtcNow.Date.ToString());
-
-                Save();
             }
         }
         else
         {
+            isReset = true;
+
             PlayerPrefs.SetString(lastAccessDateKey, DateTime.UtcNow.Date.ToString());
         }
+
+        return isReset;
     }
 }

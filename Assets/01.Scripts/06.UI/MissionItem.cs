@@ -71,7 +71,7 @@ public class MissionItem : MonoBehaviour
 
     void SetRewardBtnInteractable(int maxCnt, int curCnt)
     {
-        if (maxCnt <= curCnt)
+        if (curCnt >= maxCnt)
             getRewardBtn.interactable = true;
         else
             getRewardBtn.interactable = false;

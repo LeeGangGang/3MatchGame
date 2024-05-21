@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -101,12 +102,23 @@ public class GlobalPanel : MonoBehaviour
         if (playTimer >= 60f)
         {
             playTimer -= 60f;
+
+            var mdm = (MissionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MissionDataModel);
+            foreach (int key in mdm.GetKeys(eMissionKind.PlayTime))
+                mdm.MyMission.SetAddMission(key, 1);
         }
 
-        if (loginDate.DayOfYear > DateTime.UtcNow.DayOfYear)
+        if (DateTime.UtcNow.DayOfYear > loginDate.DayOfYear)
         {
             var mdm = (MissionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MissionDataModel);
-            mdm.MyMission.ReSetMissionData();
+            if (mdm.MyMission.IsReSetMissionData())
+            {
+                mdm.GetKeys(eMissionKind.Login).ToList().ForEach(key =>
+                {
+                    mdm.MyMission.SetAddMission(key, 1);
+                });
+            }
+            loginDate = DateTime.UtcNow;
         }
     }
 

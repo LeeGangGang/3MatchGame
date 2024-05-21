@@ -81,6 +81,10 @@ public class UIManager : MonoBehaviour
 
         mwdm.SteminaCnt--;
 
+        var mdm = (MissionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MissionDataModel);
+        foreach (int key in mdm.GetKeys(eMissionKind.Stemina))
+            mdm.MyMission.SetAddMission(key, 1);
+
         _lobby.Exit();
         _game.Enter(_mode);
         _global.SetActiveLifeAddBtn(false);

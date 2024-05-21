@@ -55,6 +55,8 @@ public class MissionPopup : APopup
             UpdateUI();
             daliyTg.SetIsOnWithoutNotify(true);
             OnChangeTabToggle(true, eMissionType.Daily);
+            OnChangeTabToggle(false, eMissionType.Weekly);
+            OnChangeTabToggle(false, eMissionType.Monthly);
         });
     }
 
@@ -91,7 +93,7 @@ public class MissionPopup : APopup
             {
                 int curCnt = mdm.MyMission.GetMissionCount(missionData.Key);
                 int maxCnt = missionData.Value.ClearCnt;
-                if (curCnt > maxCnt)
+                if (curCnt >= maxCnt)
                 {
                     if (rewardList.ContainsKey(missionData.Value.RewardType))
                         rewardList[missionData.Value.RewardType] += missionData.Value.RewardCnt;
@@ -126,18 +128,19 @@ public class MissionPopup : APopup
         if (rewardKey == 100 || rewardKey == 101)
         {
             var mwdm = (MyWealthDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyWealthDataModel);
+            Dictionary<int, int> additems = new Dictionary<int, int>();
             if (rewardKey == 100)
             {
                 mwdm.Gold += rewardCnt;
+                additems.Add(0, rewardCnt);
+                addItemsList.Add(eProductType.Gold, additems);
             }
             else if (rewardKey == 101)
             {
                 mwdm.Dia += rewardCnt;
+                additems.Add(0, rewardCnt);
+                addItemsList.Add(eProductType.Dia, additems);
             }
-
-            Dictionary<int, int> additems = new Dictionary<int, int>();
-            additems.Add(0, rewardCnt);
-            addItemsList.Add(eProductType.Gold, additems);
         }
         else if (rewardKey == 200 || rewardKey == 201)
         {

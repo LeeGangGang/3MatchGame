@@ -102,6 +102,9 @@ public class StorePanel : ALobbyPanel
 
     void OnClickBuyEvent(eProductID id)
     {
+        // ¾ÆÀÌÅÛ È¹µæ È½¼ö
+        int buyCollectionCnt = 0;
+
         UIManager.Inst.SetActiveLoading(true);
 
         var mwdm = (MyWealthDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyWealthDataModel);
@@ -186,6 +189,8 @@ public class StorePanel : ALobbyPanel
 
                     cdm.MyCard.SetAddCard(code, 1);
                     mwdm.Gold -= price;
+
+                    buyCollectionCnt = 1;
                 }
                 break;
             case eProductID.NormalUnitPack:
@@ -212,6 +217,8 @@ public class StorePanel : ALobbyPanel
 
                     udm.MyUnit.SetAddUnit(code, 1);
                     mwdm.Gold -= price;
+
+                    buyCollectionCnt = 1;
                 }
                 break;
             case eProductID.NormalCardPack_x10:
@@ -255,6 +262,8 @@ public class StorePanel : ALobbyPanel
                         cdm.MyCard.SetAddCard(card.Key, card.Value);
 
                     mwdm.Gold -= price;
+
+                    buyCollectionCnt = 10;
                 }
                 break;
             case eProductID.NormalUnitPack_x10:
@@ -298,12 +307,21 @@ public class StorePanel : ALobbyPanel
                         udm.MyUnit.SetAddUnit((eUnit)unit.Key, unit.Value);
 
                     mwdm.Gold -= price;
+
+                    buyCollectionCnt = 10;
                 }
                 break;
         }
 
         if (addItemsList.Count > 0)
             UIManager.Inst.SetAddItemPanel(addItemsList);
+
+        if (buyCollectionCnt > 0)
+        {
+            var mdm = (MissionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MissionDataModel);
+            foreach (int key in mdm.GetKeys(eMissionKind.BuyItem))
+                mdm.MyMission.SetAddMission(key, buyCollectionCnt);
+        }
 
         UIManager.Inst.SetActiveLoading(false);
     }
