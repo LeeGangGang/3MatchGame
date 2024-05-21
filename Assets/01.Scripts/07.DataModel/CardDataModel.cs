@@ -14,6 +14,9 @@ public class CardData
 
 public class CardDataModel : ADataModel
 {
+    MyCardCollectionDataModel myCardData = new MyCardCollectionDataModel();
+    public MyCardCollectionDataModel MyCard => myCardData;
+
     Dictionary<int, CardData> cardDataList = new Dictionary<int, CardData>();
 
     public override void Load()
@@ -34,6 +37,8 @@ public class CardDataModel : ADataModel
 
             cardDataList.Add(key, data);
         }
+
+        myCardData.Load();
     }
 
     public Dictionary<int, CardData> GetCardDataList()

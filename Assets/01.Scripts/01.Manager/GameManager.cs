@@ -40,10 +40,10 @@ public class GameManager : MonoBehaviour
         _myUnitCtrl.Enter();
         _enemyCtrl.Enter();
 
-        var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
-        foreach (var myUnitType in mudm.GetMySelectUnitDataList())
+        var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
+        foreach (var myUnitType in udm.MyUnit.GetMySelectUnitDataList())
         {
-            int level = mudm.GetMyUnitData(myUnitType.Key)[0];
+            int level = udm.MyUnit.GetMyUnitData(myUnitType.Key)[0];
             _myUnitCtrl.InsetUnit(myUnitType.Value - 1, myUnitType.Key.ToString(), level);
         }
 

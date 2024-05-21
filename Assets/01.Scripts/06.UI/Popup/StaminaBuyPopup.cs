@@ -66,7 +66,7 @@ public class StaminaBuyPopup : APopup
         {
             var mwdm = (MyWealthDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyWealthDataModel);
             mwdm.Gold -= 100;
-            mwdm.LifeCnt++;
+            mwdm.SteminaCnt++;
         }
 
         UpdateUI();

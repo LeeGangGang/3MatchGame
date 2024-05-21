@@ -16,10 +16,7 @@ public enum eDataModel
     StoreChartDataModel,
     LocalizationDataModel,
 
-    MyUnitCollectionDataModel,
-    MyCardCollectionDataModel,
     MyWealthDataModel,
-    MyMissionDataModel,
 }
 
 public class DataModelController : MonoBehaviour

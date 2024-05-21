@@ -42,8 +42,8 @@ public class MissionItem : MonoBehaviour
 
     public void UpdateUI()
     {
-        var mmdm = (MyMissionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyMissionDataModel);
-        curCnt = mmdm.GetMissionCount(key);
+        var mdm = (MissionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MissionDataModel);
+        curCnt = mdm.MyMission.GetMissionCount(key);
 
         SetCountInfo(maxCnt, curCnt);
         SetRewardBtnInteractable(maxCnt, curCnt);
@@ -79,8 +79,8 @@ public class MissionItem : MonoBehaviour
 
     public void OnClickGetRewardBtn()
     {
-        var mmdm = (MyMissionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyMissionDataModel);
-        mmdm.SetAddReward(key);
+        var mdm = (MissionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MissionDataModel);
+        mdm.MyMission.SetAddReward(key);
 
         Dictionary<eProductType, Dictionary<int, int>> addItemsList = new Dictionary<eProductType, Dictionary<int, int>>();
         if (rewardKey == 100 || rewardKey == 101)
@@ -102,8 +102,8 @@ public class MissionItem : MonoBehaviour
         else if (rewardKey == 200 || rewardKey == 201)
         {
             var scdm = (StoreChartDataModel)DataModelController.Inst.GetDataModel(eDataModel.StoreChartDataModel);
-            var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
-            
+            var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
+
             eProductID id = eProductID.NormalCardPack;
             if (rewardKey == 200)
                 id = eProductID.NormalCardPack;
@@ -129,12 +129,12 @@ public class MissionItem : MonoBehaviour
             }
 
             foreach (var card in addItemsList[eProductType.Card])
-                mcdm.SetAddCard(card.Key, card.Value);
+                cdm.MyCard.SetAddCard(card.Key, card.Value);
         }
         else if (rewardKey == 300 || rewardKey == 301)
         {
             var scdm = (StoreChartDataModel)DataModelController.Inst.GetDataModel(eDataModel.StoreChartDataModel);
-            var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
+            var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
 
             eProductID id = eProductID.NormalUnitPack;
             if (rewardKey == 200)
@@ -161,7 +161,7 @@ public class MissionItem : MonoBehaviour
             }
 
             foreach (var unit in addItemsList[eProductType.Unit])
-                mudm.SetAddUnit((eUnit)unit.Key, unit.Value);
+                udm.MyUnit.SetAddUnit((eUnit)unit.Key, unit.Value);
         }
 
         // 리워드 받으면 버튼 비활성화

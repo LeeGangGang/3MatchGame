@@ -102,11 +102,10 @@ public class EnemyController : UnitController<Enemy>
     public override void AddCardCollectionData(Enemy unit)
     {
         var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
-        var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
 
         foreach (var kind in Enum.GetValues(typeof(eCardKindStat)))
         {
-            var myCardList = mcdm.GetSelectMyCardCollectionDataList((int)eCardOption.DeBuff, (int)eCardType.Statistics, (int)kind);
+            var myCardList = cdm.MyCard.GetSelectMyCardCollectionDataList((int)eCardOption.DeBuff, (int)eCardType.Statistics, (int)kind);
             int value = cdm.GetCardSumValue(myCardList);
             if (value == 0)
                 continue;

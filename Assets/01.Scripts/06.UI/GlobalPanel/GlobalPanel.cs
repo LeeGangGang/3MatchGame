@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class GlobalPanel : MonoBehaviour
 {
-    [SerializeField] Text lifeCntTxt;
-    [SerializeField] Text lifeTimeTxt;
-    [SerializeField] Button lifeAddBtn;
+    [SerializeField] Text steminaCntTxt;
+    [SerializeField] Text steminaTimeTxt;
+    [SerializeField] Button steminaAddBtn;
 
     [SerializeField] Text goldTxt;
     [SerializeField] Text diaTxt;
@@ -19,19 +19,21 @@ public class GlobalPanel : MonoBehaviour
     [SerializeField] AddItemDirectingPanel additemPanel;
 
     float playTimer;
+    DateTime loginDate;
 
     public void Init()
     {
         playTimer = 0f;
+        loginDate = DateTime.UtcNow;
 
         settingBtn.onClick.AddListener(() =>
         {
             UIManager.Inst.Popup.OpenSettingPopup();
         });
 
-        lifeAddBtn.onClick.AddListener(() =>
+        steminaAddBtn.onClick.AddListener(() =>
         {
-            UIManager.Inst.Popup.OpenLifeBuyPopup();
+            UIManager.Inst.Popup.OpenSteminaBuyPopup();
         });
 
         var mwdm = (MyWealthDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyWealthDataModel);
@@ -44,7 +46,7 @@ public class GlobalPanel : MonoBehaviour
 
     public void SetActiveLifeAddBtn(bool isActive)
     {
-        lifeAddBtn.gameObject.SetActive(isActive);
+        steminaAddBtn.gameObject.SetActive(isActive);
     }
 
     public void ShowFade(Action onComplete)
@@ -71,34 +73,40 @@ public class GlobalPanel : MonoBehaviour
     void LobbyTimer()
     {
         var mwdm = (MyWealthDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyWealthDataModel);
-        if (mwdm.LifeCnt < 5)
+        if (mwdm.SteminaCnt < 5)
         {
-            TimeSpan sp = DateTime.UtcNow - mwdm.LifeDate;
+            TimeSpan sp = DateTime.UtcNow - mwdm.SteminaDate;
             TimeSpan fiveMin = new TimeSpan(0, 5, 0);
             int cnt = (int)(sp.TotalMinutes / 5);
             if (cnt > 0)
             {
-                if (mwdm.LifeCnt + cnt > 5)
-                    cnt = 5 - mwdm.LifeCnt;
+                if (mwdm.SteminaCnt + cnt > 5)
+                    cnt = 5 - mwdm.SteminaCnt;
 
-                mwdm.LifeCnt += cnt;
-                mwdm.LifeDate = mwdm.LifeDate.AddMinutes(fiveMin.Minutes * cnt);
-                sp = DateTime.UtcNow - mwdm.LifeDate;
+                mwdm.SteminaCnt += cnt;
+                mwdm.SteminaDate = mwdm.SteminaDate.AddMinutes(fiveMin.Minutes * cnt);
+                sp = DateTime.UtcNow - mwdm.SteminaDate;
             }
 
-            lifeTimeTxt.text = (fiveMin - sp).ToString(@"mm\:ss");
+            steminaTimeTxt.text = (fiveMin - sp).ToString(@"mm\:ss");
         }
         else
         {
-            lifeTimeTxt.text = "MAX";
+            steminaTimeTxt.text = "MAX";
         }
 
-        lifeCntTxt.text = mwdm.LifeCnt.ToString();
+        steminaCntTxt.text = mwdm.SteminaCnt.ToString();
 
         playTimer += Time.deltaTime;
         if (playTimer >= 60f)
         {
             playTimer -= 60f;
+        }
+
+        if (loginDate.DayOfYear > DateTime.UtcNow.DayOfYear)
+        {
+            var mdm = (MissionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MissionDataModel);
+            mdm.MyMission.ReSetMissionData();
         }
     }
 

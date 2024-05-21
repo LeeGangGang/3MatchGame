@@ -55,14 +55,13 @@ public class CollectionPanel : ALobbyPanel
     {
         // Unit Info Update
         var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
-        var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
         int updateCollectSlotCnt = 0;
-        foreach (var myUnit in mudm.GetMyUnitCollectionDataList())
+        foreach (var myUnit in udm.MyUnit.GetMyUnitCollectionDataList())
         {
             int grade = udm.GetUnitData(myUnit.Key).Grade;
-            if (mudm.GetMySelectUnitDataList().Keys.Contains(myUnit.Key))
+            if (udm.MyUnit.GetMySelectUnitDataList().Keys.Contains(myUnit.Key))
             {
-                int unitIdx = mudm.GetMySelectUnitDataList()[myUnit.Key] - 1;
+                int unitIdx = udm.MyUnit.GetMySelectUnitDataList()[myUnit.Key] - 1;
                 selectUnitSlotList[unitIdx].Enter(myUnit.Key, grade, myUnit.Value[0]);
             }
             else
@@ -76,8 +75,7 @@ public class CollectionPanel : ALobbyPanel
         // Card Info Update
         int cardIdx = 0;
         var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
-        var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
-        Dictionary<int, int[]> myCards = mcdm.GetMyCardCollectionDataList();
+        Dictionary<int, int[]> myCards = cdm.MyCard.GetMyCardCollectionDataList();
         foreach (var cardData in cdm.GetCardDataList())
         {
             var slot = GetCollectionCardSlot(cardData.Key);

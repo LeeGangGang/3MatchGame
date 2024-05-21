@@ -39,41 +39,41 @@ public class MyWealthDataModel : ADataModel
         }
     }
 
-    DateTime lifeDate;
-    public DateTime LifeDate
+    DateTime steminaDate;
+    public DateTime SteminaDate
     {
         get
         {
-            return lifeDate;
+            return steminaDate;
         }
         set
         {
-            lifeDate = value;
-            PlayerPrefs.SetString(lifeDateKey, lifeDate.ToString());
+            steminaDate = value;
+            PlayerPrefs.SetString(steminaDateKey, steminaDate.ToString());
         }
     }
 
-    int lifeCnt;
-    public int LifeCnt
+    int steminaCnt;
+    public int SteminaCnt
     {
         get
         {
-            return lifeCnt;
+            return steminaCnt;
         }
         set
         {
             if (value > 5)
                 value = 5;
 
-            lifeCnt = value;
-            PlayerPrefs.SetInt(lifeCntKey, lifeCnt);
+            steminaCnt = value;
+            PlayerPrefs.SetInt(steminaCntKey, steminaCnt);
         }
     }
 
     string goldKey = "Gold";
     string diaKey = "Dia";
-    string lifeCntKey = "LifeCnt";
-    string lifeDateKey = "LifeDate";
+    string steminaCntKey = "SteminaCnt";
+    string steminaDateKey = "SteminaDate";
 
     public override void Load()
     {
@@ -87,15 +87,15 @@ public class MyWealthDataModel : ADataModel
         else
             dia = PlayerPrefs.GetInt(diaKey, 0);
 
-        if (!PlayerPrefs.HasKey(lifeCntKey))
-            lifeCnt = 5;
+        if (!PlayerPrefs.HasKey(steminaCntKey))
+            steminaCnt = 5;
         else
-            lifeCnt = PlayerPrefs.GetInt(lifeCntKey, 5);
+            steminaCnt = PlayerPrefs.GetInt(steminaCntKey, 5);
 
-        if (!PlayerPrefs.HasKey(lifeDateKey))
-            lifeDate = DateTime.UtcNow;
+        if (!PlayerPrefs.HasKey(steminaDateKey))
+            steminaDate = DateTime.UtcNow;
         else
-            lifeDate = DateTime.Parse(PlayerPrefs.GetString(lifeDateKey, DateTime.UtcNow.ToString()));
+            steminaDate = DateTime.Parse(PlayerPrefs.GetString(steminaDateKey, DateTime.UtcNow.ToString()));
     }
 
     public void AddGoldEvent(Action<int> evt)

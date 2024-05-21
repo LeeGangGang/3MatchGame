@@ -25,6 +25,9 @@ public class UnitData
 
 public class UnitDataModel : ADataModel
 {
+    MyUnitCollectionDataModel myUnitData = new MyUnitCollectionDataModel();
+    public MyUnitCollectionDataModel MyUnit => myUnitData;
+
     Dictionary<eUnit, UnitData> unitDataList = new Dictionary<eUnit, UnitData>();
 
     public override void Load()
@@ -49,6 +52,8 @@ public class UnitDataModel : ADataModel
 
             unitDataList.Add(type, unit);
         }
+
+        myUnitData.Load();
     }
 
     public UnitData GetUnitData(eUnit type)

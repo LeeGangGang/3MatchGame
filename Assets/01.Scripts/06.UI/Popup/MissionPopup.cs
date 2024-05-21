@@ -83,14 +83,13 @@ public class MissionPopup : APopup
     void OnClickAllGetBtn()
     {
         var mdm = (MissionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MissionDataModel);
-        var mmdm = (MyMissionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyMissionDataModel);
         
         Dictionary<int, int> rewardList = new Dictionary<int, int>();
         foreach (var missionData in mdm.GetAllData())
         {
-            if (mmdm.GetAllData().ContainsKey(missionData.Key))
+            if (mdm.MyMission.GetAllData().ContainsKey(missionData.Key))
             {
-                int curCnt = mmdm.GetMissionCount(missionData.Key);
+                int curCnt = mdm.MyMission.GetMissionCount(missionData.Key);
                 int maxCnt = missionData.Value.ClearCnt;
                 if (curCnt > maxCnt)
                 {
@@ -99,7 +98,7 @@ public class MissionPopup : APopup
                     else
                         rewardList.Add(missionData.Value.RewardType, missionData.Value.RewardCnt);
 
-                    mmdm.SetAddReward(missionData.Key);
+                    mdm.MyMission.SetAddReward(missionData.Key);
                 }
             }
         }
@@ -143,7 +142,7 @@ public class MissionPopup : APopup
         else if (rewardKey == 200 || rewardKey == 201)
         {
             var scdm = (StoreChartDataModel)DataModelController.Inst.GetDataModel(eDataModel.StoreChartDataModel);
-            var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
+            var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
 
             eProductID id = eProductID.NormalCardPack;
             if (rewardKey == 200)
@@ -170,12 +169,12 @@ public class MissionPopup : APopup
             }
 
             foreach (var card in addItemsList[eProductType.Card])
-                mcdm.SetAddCard(card.Key, card.Value);
+                cdm.MyCard.SetAddCard(card.Key, card.Value);
         }
         else if (rewardKey == 300 || rewardKey == 301)
         {
             var scdm = (StoreChartDataModel)DataModelController.Inst.GetDataModel(eDataModel.StoreChartDataModel);
-            var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
+            var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
 
             eProductID id = eProductID.NormalUnitPack;
             if (rewardKey == 200)
@@ -202,7 +201,7 @@ public class MissionPopup : APopup
             }
 
             foreach (var unit in addItemsList[eProductType.Unit])
-                mudm.SetAddUnit((eUnit)unit.Key, unit.Value);
+                udm.MyUnit.SetAddUnit((eUnit)unit.Key, unit.Value);
         }
     }
 }

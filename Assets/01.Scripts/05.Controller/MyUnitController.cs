@@ -109,11 +109,9 @@ public class MyUnitController : UnitController<MyUnit>
     public override void AddCardCollectionData(MyUnit unit)
     {
         var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
-        var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
-
         foreach (var kind in Enum.GetValues(typeof(eCardKindStat)))
         {
-            var myCardList = mcdm.GetSelectMyCardCollectionDataList((int)eCardOption.Buff, (int)eCardType.Statistics, (int)kind);
+            var myCardList = cdm.MyCard.GetSelectMyCardCollectionDataList((int)eCardOption.Buff, (int)eCardType.Statistics, (int)kind);
             int value = cdm.GetCardSumValue(myCardList);
             if (value == 0)
                 continue;
@@ -140,7 +138,7 @@ public class MyUnitController : UnitController<MyUnit>
 
         foreach (var kind in Enum.GetValues(typeof(eCardKindStack)))
         {
-            var myCardList = mcdm.GetSelectMyCardCollectionDataList((int)eCardOption.Buff, (int)eCardType.SkillStack, (int)kind);
+            var myCardList = cdm.MyCard.GetSelectMyCardCollectionDataList((int)eCardOption.Buff, (int)eCardType.SkillStack, (int)kind);
             int value = cdm.GetCardSumValue(myCardList);
             if (value == 0)
                 continue;

@@ -50,11 +50,10 @@ public class CardInfoPopup : APopup
     void UpdateUI(int code)
     {
         var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
-        var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
 
         int level;
         int exp;
-        int[] info = mcdm.GetMyCardCollectionData(code);
+        int[] info = cdm.MyCard.GetMyCardCollectionData(code);
         if (info == null)
         {
             level = -1;
@@ -81,8 +80,8 @@ public class CardInfoPopup : APopup
 
     void OnClickUpgradeBtn()
     {
-        var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
-        mcdm.SetUpgradeCard(cardCode, (isSuccess) =>
+        var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
+        cdm.MyCard.SetUpgradeCard(cardCode, (isSuccess) =>
         {
             if (isSuccess)
             {

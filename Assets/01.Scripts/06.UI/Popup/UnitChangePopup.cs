@@ -53,9 +53,8 @@ public class UnitChangePopup : APopup
     void UpdateUI()
     {
         var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
-        var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
         int idx = 0;
-        foreach (var unit in mudm.GetMyUnSelectUnitDataList())
+        foreach (var unit in udm.MyUnit.GetMyUnSelectUnitDataList())
         {
             var slot = GetUnitSlot(unit.Key);
             int grade = udm.GetUnitData(unit.Key).Grade;
@@ -73,8 +72,8 @@ public class UnitChangePopup : APopup
 
     void OnClickChangeBtn()
     {
-        var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
-        mudm.SetChangeSelectUnit(beforeUnit, afterUnit);
+        var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
+        udm.MyUnit.SetChangeSelectUnit(beforeUnit, afterUnit);
 
         onChangeEvent?.Invoke(afterUnit);
 

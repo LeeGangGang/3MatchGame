@@ -76,10 +76,10 @@ public class UIManager : MonoBehaviour
         _currUIType = eUIType.InGame;
 
         var mwdm = (MyWealthDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyWealthDataModel);
-        if (mwdm.LifeCnt == 5)
-            mwdm.LifeDate = DateTime.UtcNow;
+        if (mwdm.SteminaCnt == 5)
+            mwdm.SteminaDate = DateTime.UtcNow;
 
-        mwdm.LifeCnt--;
+        mwdm.SteminaCnt--;
 
         _lobby.Exit();
         _game.Enter(_mode);
@@ -91,8 +91,10 @@ public class UIManager : MonoBehaviour
     public void GameExit()
     {
         _currUIType = eUIType.Lobby;
-                _lobby.Enter();
+
+        _lobby.Enter();
         _game.Exit();
+
         _global.SetActiveLifeAddBtn(true);
 
         GameManager.Inst.GameExit();

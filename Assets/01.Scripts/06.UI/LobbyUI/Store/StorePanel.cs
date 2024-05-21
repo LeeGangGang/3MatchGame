@@ -168,7 +168,7 @@ public class StorePanel : ALobbyPanel
             case eProductID.UniqCardPack:
                 if (mwdm.Gold >= price)
                 {
-                    var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
+                    var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
                     int code = scdm.GetCardCode(id);
                     if (addItemsList.ContainsKey(eProductType.Card))
                     {
@@ -184,7 +184,7 @@ public class StorePanel : ALobbyPanel
                         addItemsList.Add(eProductType.Card, additems);
                     }
 
-                    mcdm.SetAddCard(code, 1);
+                    cdm.MyCard.SetAddCard(code, 1);
                     mwdm.Gold -= price;
                 }
                 break;
@@ -194,7 +194,7 @@ public class StorePanel : ALobbyPanel
             case eProductID.UniqUnitPack:
                 if (mwdm.Gold >= price)
                 {
-                    var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
+                    var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
                     eUnit code = scdm.GetUnitCode(id);
                     if (addItemsList.ContainsKey(eProductType.Unit))
                     {
@@ -210,7 +210,7 @@ public class StorePanel : ALobbyPanel
                         addItemsList.Add(eProductType.Unit, additems);
                     }
 
-                    mudm.SetAddUnit(code, 1);
+                    udm.MyUnit.SetAddUnit(code, 1);
                     mwdm.Gold -= price;
                 }
                 break;
@@ -229,7 +229,7 @@ public class StorePanel : ALobbyPanel
 
                 if (mwdm.Gold >= price)
                 {
-                    var mcdm = (MyCardCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyCardCollectionDataModel);
+                    var cdm = (CardDataModel)DataModelController.Inst.GetDataModel(eDataModel.CardDataModel);
                     int[] addCardList = new int[cnt];
                     for (int i = 0; i < cnt; i++)
                     {
@@ -252,7 +252,7 @@ public class StorePanel : ALobbyPanel
                     }
 
                     foreach (var card in addItemsList[eProductType.Card])
-                        mcdm.SetAddCard(card.Key, card.Value);
+                        cdm.MyCard.SetAddCard(card.Key, card.Value);
 
                     mwdm.Gold -= price;
                 }
@@ -272,7 +272,7 @@ public class StorePanel : ALobbyPanel
 
                 if (mwdm.Gold >= price)
                 {
-                    var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
+                    var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
                     int[] addCardList = new int[cnt];
                     for (int i = 0; i < cnt; i++)
                     { 
@@ -295,7 +295,7 @@ public class StorePanel : ALobbyPanel
                     }
 
                     foreach (var unit in addItemsList[eProductType.Unit])
-                        mudm.SetAddUnit((eUnit)unit.Key, unit.Value);
+                        udm.MyUnit.SetAddUnit((eUnit)unit.Key, unit.Value);
 
                     mwdm.Gold -= price;
                 }

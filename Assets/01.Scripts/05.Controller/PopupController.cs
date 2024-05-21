@@ -105,7 +105,7 @@ public class PopupController : MonoBehaviour
         productInfoPopup.Enter(id, spr, onComplete);
     }
 
-    public void OpenLifeBuyPopup()
+    public void OpenSteminaBuyPopup()
     {
         staminaBuyPopup.Enter();
     }

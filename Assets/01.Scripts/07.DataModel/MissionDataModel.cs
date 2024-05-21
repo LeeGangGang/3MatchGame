@@ -15,6 +15,9 @@ public class MissionData
 
 public class MissionDataModel : ADataModel
 {
+    MyMissionDataModel myMissionData = new MyMissionDataModel();
+    public MyMissionDataModel MyMission => myMissionData;
+
     Dictionary<int, MissionData> missionDataList = new Dictionary<int, MissionData>();
 
     public override void Load()
@@ -40,6 +43,8 @@ public class MissionDataModel : ADataModel
 
             missionDataList.Add(key, mission);
         }
+
+        myMissionData.Load();
     }
 
     public MissionData GetData(int key)

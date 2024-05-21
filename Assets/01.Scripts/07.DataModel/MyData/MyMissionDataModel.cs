@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,10 @@ public class MyMissionDataModel : ADataModel
 {
     // value == -1, 보상 받음
     Dictionary<int, int> myMissionList = new Dictionary<int, int>();
-    
-    string key = "MyMission";
+
+    readonly string key = "MyMission";
+
+    readonly string lastAccessDateKey = "LastAccessDate";
 
     public override void Load()
     {
@@ -24,6 +27,8 @@ public class MyMissionDataModel : ADataModel
                 myMissionList.Add(key, cnt);
             }
         }
+
+        ReSetMissionData();
     }
 
     public void Save()
@@ -71,5 +76,65 @@ public class MyMissionDataModel : ADataModel
     public Dictionary<int, int> GetAllData()
     {
         return myMissionList;
+    }
+
+    public Dictionary<int, int> GetData(eMissionType type)
+    {
+        var missions = myMissionList.Where(data => data.Key / 100 == (int)type);
+        return missions.ToDictionary(x => x.Key, x => x.Value);
+    }
+
+    public void ReSetMissionData()
+    {
+        // MEMO : 별도의 서버 없이 미션 초기화
+        if (PlayerPrefs.HasKey(lastAccessDateKey))
+        {
+            DateTime lastAccessDate = Convert.ToDateTime(PlayerPrefs.GetString(lastAccessDateKey));
+            DateTime todayDate = DateTime.UtcNow.Date;
+            if (todayDate > lastAccessDate)
+            {
+                // 로그인 1회 추가
+                //
+                
+                // 일간 초기화
+                Debug.Log("Daliy Mission Reset");
+                GetData(eMissionType.Daily).Keys.ToList().ForEach(key =>
+                {
+                    myMissionList[key] = 0;
+                });
+
+                // 주간 초기화
+                int subDay = todayDate.DayOfWeek == DayOfWeek.Sunday ? 6 : (int)todayDate.DayOfWeek - 1;
+                DateTime todayWeekDate = todayDate.AddDays(-subDay);
+                subDay = lastAccessDate.DayOfWeek == DayOfWeek.Sunday ? 6 : (int)lastAccessDate.DayOfWeek - 1;
+                DateTime lastWeekDate = lastAccessDate.AddDays(-subDay);
+                if (todayWeekDate > lastWeekDate)
+                {
+                    Debug.Log("Weekly Mission Reset");
+                    GetData(eMissionType.Weekly).Keys.ToList().ForEach(key =>
+                    {
+                        myMissionList[key] = 0;
+                    });
+                }
+
+                // 월간 초기화
+                if (todayDate.Year > lastAccessDate.Year || (todayDate.Year == lastAccessDate.Year && todayDate.Month > lastAccessDate.Month))
+                {
+                    Debug.Log("Monthly Mission Reset");
+                    GetData(eMissionType.Monthly).Keys.ToList().ForEach(key =>
+                    {
+                        myMissionList[key] = 0;
+                    });
+                }
+
+                PlayerPrefs.SetString(lastAccessDateKey, DateTime.UtcNow.Date.ToString());
+
+                Save();
+            }
+        }
+        else
+        {
+            PlayerPrefs.SetString(lastAccessDateKey, DateTime.UtcNow.Date.ToString());
+        }
     }
 }

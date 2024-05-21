@@ -71,11 +71,10 @@ public class UnitInfoPopup : APopup
         unit = type;
 
         var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
-        var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
 
         var data = udm.GetUnitData(unit);
-        int level = mudm.GetMyUnitData(unit)[0];
-        int exp = mudm.GetMyUnitData(unit)[1];
+        int level = udm.MyUnit.GetMyUnitData(unit)[0];
+        int exp = udm.MyUnit.GetMyUnitData(unit)[1];
 
         var sdm = (SkillDataModel)DataModelController.Inst.GetDataModel(eDataModel.SkillDataModel);
         for (int i = 0; i < data.Skill.Length; i++)
@@ -88,7 +87,7 @@ public class UnitInfoPopup : APopup
         SetUnitLevel(level, exp);
         
         // 선택한 유닛일 경우에만
-        changeBtn.gameObject.SetActive(mudm.GetMySelectUnitDataList().Keys.ToList().Contains(type));
+        changeBtn.gameObject.SetActive(udm.MyUnit.GetMySelectUnitDataList().Keys.ToList().Contains(type));
 
         int grade = udm.GetUnitData(unit).Grade;
         SetGradeImg(grade);
@@ -182,8 +181,8 @@ public class UnitInfoPopup : APopup
 
     void OnClickUpgradeBtn()
     {
-        var mudm = (MyUnitCollectionDataModel)DataModelController.Inst.GetDataModel(eDataModel.MyUnitCollectionDataModel);
-        mudm.SetUpgradeUnit(unit, (isSuccess) =>
+        var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
+        udm.MyUnit.SetUpgradeUnit(unit, (isSuccess) =>
         {
             if (isSuccess)
             {
