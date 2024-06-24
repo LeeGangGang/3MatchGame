@@ -16,7 +16,6 @@ public class StageModeUI : MonoBehaviour
 
     public void Exit()
     {
-
     }
 
     public void SetMoveCountText(int moveCnt)

@@ -32,4 +32,9 @@ public class UnitSlotUI : MonoBehaviour
     {
         _myUnitSlotList[unit].SetGaugeFillAmount(idx, amount);
     }
+
+    public void DieUnitSlot(Unit unit)
+    {
+        _myUnitSlotList[unit].SetActiveDieImage(true);
+    }
 }

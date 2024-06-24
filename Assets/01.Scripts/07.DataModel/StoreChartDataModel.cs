@@ -119,7 +119,7 @@ public class StoreChartDataModel : ADataModel
 
     public eUnit GetUnitCode(eProductID id)
     {
-        eUnit code = eUnit.Lee;
+        eUnit code = eUnit.Wizard_0;
 
         float total = 0f;
         foreach (var card in unitPackChartList[id])

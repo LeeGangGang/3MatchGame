@@ -6,7 +6,6 @@ using UnityEngine;
 public enum eFxID
 {
     BlockMove,
-
     BlockRemove,
 
     Lightning,
@@ -17,6 +16,10 @@ public enum eFxID
 
     WireRemove,
     SpiralRemove,
+
+    // RPG
+    EnergyBallHit,
+    MeleeAttack,
 }
 
 public class FxManager : MonoBehaviour

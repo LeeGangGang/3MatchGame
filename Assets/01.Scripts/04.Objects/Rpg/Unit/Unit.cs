@@ -17,7 +17,15 @@ public enum AnimState
 
 public abstract class Unit : MonoBehaviour
 {
+    public string Name;
+    public int Index;
+
     protected int curHp;
+    public int maxHp;
+    public int critical_Per;
+    public int defence;
+
+    public bool IsAttacking;
 
     private AnimState state;
     public AnimState CurState
@@ -41,19 +49,27 @@ public abstract class Unit : MonoBehaviour
 
     protected List<Unit> targets;
 
-    protected Action onComplete;
-
     protected UnitAnim anim;
 
-    public abstract void Init(string name, int level);
+    public abstract void Init(int idx, string name, int level);
     public abstract void Enter();
 
     public abstract void Hit(float dmg, bool isCritical);
     public abstract bool IsFullStack();
     public abstract bool IsDie();
 
-    public abstract void UseSkill(List<Unit> targets, Action onComplete);
-    public abstract IEnumerator UseSkillCo();
+    public abstract void CheckUseSkill(List<Unit> targets, Action<List<AttackEvent>> onAddAtkEvents);
+    public virtual void AttackStart(string skillName, int idx)
+    {
+        IsAttacking = true;
+        anim.skillName = skillName;
+        if (idx == 0)
+            CurState = AnimState.Attack;
+        else
+            CurState = AnimState.Skill;
+    }
+
+    public abstract IEnumerator UseSkillCo(string skillName);
 
     public abstract void Die();
 }

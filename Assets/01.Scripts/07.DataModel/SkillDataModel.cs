@@ -19,7 +19,6 @@ public class SkillDataModel : ADataModel
             skill.Type = (int)datas[i]["Type"];
             skill.Color = (eColor)datas[i]["Color"];
             skill.Stack = (int)datas[i]["Stack"];
-            skill.TargetCnt = (int)datas[i]["TargetCnt"];
             skill.Value = (int)datas[i]["Value"];
             skill.Name = (string)datas[i]["Name"];
 

@@ -9,17 +9,17 @@ public class EnemyController : UnitController<Enemy>
 
     public void Start()
     {
-        _unitRoot = this.gameObject.transform;
+        unitRoot = this.gameObject.transform;
     }
 
     public override void Enter()
     {
-        _unitList = new List<Unit>();
+        unitList = new List<Unit>();
     }
 
     public override void Exit()
     {
-        foreach (var unit in _unitList)
+        foreach (var unit in unitList)
         {
             if (unit == null)
                 continue;
@@ -27,14 +27,14 @@ public class EnemyController : UnitController<Enemy>
             Destroy(unit.gameObject);
         }
 
-        _unitList = null;
+        unitList = null;
     }
 
     public override bool ChackExtermination()
     {
         bool rtn = false;
 
-        foreach (var unit in _unitList)
+        foreach (var unit in unitList)
         {
             if (unit.CurState == AnimState.Die)
             {
@@ -49,24 +49,24 @@ public class EnemyController : UnitController<Enemy>
     public override void InsetUnit(int idx, string unitName, int level)
     {
         GameObject prefab = Resources.Load(string.Format("Unit/Enemy/{0}", unitName)) as GameObject;
-        Enemy addUnit = Instantiate(prefab, _createPos[idx], Quaternion.identity, _unitRoot).GetComponent<Enemy>();
-        addUnit.Init(unitName, level);
+        Enemy addUnit = Instantiate(prefab, _createPos[idx], Quaternion.identity, unitRoot).GetComponent<Enemy>();
+        addUnit.Init(idx, unitName, level);
         AddCardCollectionData(addUnit);
         addUnit.Enter();
 
-        _unitList.Add(addUnit);
+        unitList.Add(addUnit);
     }
 
     public override void RemoveUnit(string unitName)
     {
-        Unit removeUnit = _unitList.Find(x => x.name == unitName);
+        Unit removeUnit = unitList.Find(x => x.name == unitName);
 
-        _unitList.Remove(removeUnit);
+        unitList.Remove(removeUnit);
     }
 
     public void AddStack(int stack)
     {
-        foreach (Enemy unit in _unitList)
+        foreach (Enemy unit in unitList)
             unit.AddStack(stack);
     }
 
@@ -74,7 +74,7 @@ public class EnemyController : UnitController<Enemy>
     {
         List<Unit> fullStackUnitList = new List<Unit>();
 
-        foreach (Enemy enemy in _unitList)
+        foreach (Enemy enemy in unitList)
         {
             if (enemy.IsDie())
                 continue;
@@ -90,7 +90,7 @@ public class EnemyController : UnitController<Enemy>
     {
         List<Unit> liveUnitList = new List<Unit>();
 
-        foreach (Enemy enemy in _unitList)
+        foreach (Enemy enemy in unitList)
         {
             if (enemy.IsDie() == false)
                 liveUnitList.Add(enemy);

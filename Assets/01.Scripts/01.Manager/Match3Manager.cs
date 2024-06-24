@@ -911,13 +911,11 @@ public class Match3Manager : MonoBehaviour
                         UnselectBlock();
                     }));
 
-                    StartCoroutine(GameManager.Inst.Restart());
-
                     State = eState.Idle;
                     StartCoroutine(FindMatchSystem());
-                }
 
-                StartCoroutine(GameManager.Inst.Restart());
+                    StartCoroutine(GameManager.Inst.Restart());
+                }
 
                 State = eState.Idle;
                 StartCoroutine(FindMatchSystem());

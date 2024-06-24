@@ -19,13 +19,13 @@ public class MyUnitCollectionDataModel : ADataModel
     {
         if (!PlayerPrefs.HasKey(key))
         {
-            myUnitCollectionList.Add(eUnit.Lee, new int[2] { 0, 300 });
-            myUnitCollectionList.Add(eUnit.Kyoung, new int[2] { 1, 4 });
-            myUnitCollectionList.Add(eUnit.Seop, new int[2] { 2, 5 });
+            myUnitCollectionList.Add(eUnit.Wizard_0, new int[2] { 0, 300 });
+            myUnitCollectionList.Add(eUnit.Archer_0, new int[2] { 1, 4 });
+            myUnitCollectionList.Add(eUnit.Warrior_0, new int[2] { 2, 5 });
 
-            mySelectUnit.Add(eUnit.Lee, 1);
-            mySelectUnit.Add(eUnit.Kyoung, 2);
-            mySelectUnit.Add(eUnit.Seop, 3);
+            mySelectUnit.Add(eUnit.Wizard_0, 1);
+            mySelectUnit.Add(eUnit.Archer_0, 2);
+            mySelectUnit.Add(eUnit.Warrior_0, 3);
 
             Save();
         }
@@ -34,7 +34,7 @@ public class MyUnitCollectionDataModel : ADataModel
             var datas = PlayerPrefs.GetString(key).Split(',');
             for (int i = 0; i < datas.Length; i++)
             {
-                eUnit type = (eUnit)Enum.Parse(typeof(eUnit), datas[i].Split('_')[0]);
+                eUnit type = (eUnit)Util.ParseToInt(datas[i].Split('_')[0]);
                 int[] value = new int[2]
                 {
                     Util.ParseToInt(datas[i].Split('_')[1]),
@@ -77,7 +77,7 @@ public class MyUnitCollectionDataModel : ADataModel
             if (mySelectUnit.Keys.Contains(myUnitInfo.Key))
                 isSelect = mySelectUnit[myUnitInfo.Key];
             
-            string str = string.Format("{0}_{1}_{2}_{3},", myUnitInfo.Key, myUnitInfo.Value[0], myUnitInfo.Value[1], isSelect);
+            string str = string.Format("{0}_{1}_{2}_{3},", (int)myUnitInfo.Key, myUnitInfo.Value[0], myUnitInfo.Value[1], isSelect);
 
             sb.Append(str);
         }

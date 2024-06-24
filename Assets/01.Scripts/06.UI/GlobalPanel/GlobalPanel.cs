@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class GlobalPanel : MonoBehaviour
 {
+    [SerializeField] GameObject wealthGroup;
     [SerializeField] Text steminaCntTxt;
     [SerializeField] Text steminaTimeTxt;
     [SerializeField] Button steminaAddBtn;
@@ -45,9 +46,9 @@ public class GlobalPanel : MonoBehaviour
         mwdm.AddDiaEvent(SetDiaText);
     }
 
-    public void SetActiveLifeAddBtn(bool isActive)
+    public void SetActiveWealth(bool isActive)
     {
-        steminaAddBtn.gameObject.SetActive(isActive);
+        wealthGroup.SetActive(isActive);
     }
 
     public void ShowFade(Action onComplete)

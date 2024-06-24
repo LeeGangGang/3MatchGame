@@ -87,7 +87,7 @@ public class UIManager : MonoBehaviour
 
         _lobby.Exit();
         _game.Enter(_mode);
-        _global.SetActiveLifeAddBtn(false);
+        _global.SetActiveWealth(false);
 
         GameManager.Inst.GameStart(num);
     }
@@ -99,7 +99,7 @@ public class UIManager : MonoBehaviour
         _lobby.Enter();
         _game.Exit();
 
-        _global.SetActiveLifeAddBtn(true);
+        _global.SetActiveWealth(true);
 
         GameManager.Inst.GameExit();
 

@@ -69,9 +69,9 @@ public class PopupController : MonoBehaviour
         }
     }
 
-    public void OpenResultPopup(bool isClear)
+    public void OpenResultPopup(bool isClear, Dictionary<eProductType, Dictionary<int, int>> addItems)
     {
-        resultPopup.Enter(isClear);
+        resultPopup.Enter(isClear, addItems);
     }
 
     public void OpenSettingPopup()

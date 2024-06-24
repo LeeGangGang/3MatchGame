@@ -5,6 +5,7 @@ using System.Reflection;
 using System;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class Enemy : Unit
 {
@@ -14,25 +15,29 @@ public class Enemy : Unit
     int currLevel;
 
     float maxStack;
-    int curStack;
-
-    public int maxHp;
-    public int critical_Per;
+    float curStack;
     public int minAtk;
     public int maxAtk;
-    public int defence;
 
-    public override void Init(string name, int level)
+    int atkCnt = 1;
+
+    Vector3 orgPos;
+
+    public override void Init(int idx, string name, int level)
     {
+        Name = name;
+        Index = idx;
         currLevel = level;
 
         EnemyDataModel edm = (EnemyDataModel)DataModelController.Inst.GetDataModel(eDataModel.EnemyDataModel);
         var data = edm.GetData((eEnemy)Enum.Parse(typeof(eEnemy), name), level);
 
         anim = GetComponentInChildren<UnitAnim>();
-        anim.Init(data.AttackMotion);
+        anim.Init();
 
-        curStack = 0;
+        atkCnt = data.AttackMotion;
+
+        curStack = 0f;
         maxStack = data.Stack;
 
         maxHp = data.Hp;
@@ -42,6 +47,8 @@ public class Enemy : Unit
 
         minAtk = data.AttackRange[0];
         maxAtk = data.AttackRange[1];
+
+        orgPos = transform.position;
     }
 
     public override void Enter()
@@ -114,34 +121,62 @@ public class Enemy : Unit
     public void AddStack(int stack)
     {
         curStack += stack;
+        if (curStack > maxStack)
+            curStack = maxStack;
     }
 
     public override void Die()
     {
-        curStack = 0;
+        curStack = 0f;
+
         CurState = AnimState.Die;
+
+        GameManager.Inst.OnUnitDieEvent(Name);
     }
 
-    public override void UseSkill(List<Unit> targets, Action onComplete)
+    public override void CheckUseSkill(List<Unit> targets, Action<List<AttackEvent>> onAddAtkEvents)
     {
+        List<AttackEvent> atkList = new List<AttackEvent>();
+
         if (curStack >= maxStack)
         {
             this.targets = targets;
-            this.onComplete = onComplete;
-
-            CurState = AnimState.Attack;
+            curStack -= maxStack;
+            int skillIdx = Random.Range(0, atkCnt);
+            AttackEvent atkEvent = new AttackEvent(1, this.Name, Index, "Attack", skillIdx);
+            atkList.Add(atkEvent);
         }
+
+        onAddAtkEvents?.Invoke(atkList);
     }
 
-    public override IEnumerator UseSkillCo()
+    public override IEnumerator UseSkillCo(string skillName)
     {
+        Vector3 movePos = targets[0].gameObject.transform.position;
+        movePos.x += 0.7f;
+        movePos.y += 0.5f;
+
+        bool moveEnd = false;
+        transform.DOMove(movePos, 0.35f).OnComplete(() =>
+        {
+            moveEnd = true;
+        });
+
+        yield return new WaitUntil(() => moveEnd == true);
+
         float dmg = Random.Range(minAtk, maxAtk);
         bool isCri = Random.Range(0, 100) <= critical_Per;
-        
-        this.targets[0].Hit(dmg, isCri);
+        targets[0].Hit(dmg, isCri);
 
-        yield return null;
-        onComplete?.Invoke();
+        moveEnd = false;
+        transform.DOMove(orgPos, 0.35f).OnComplete(() =>
+        {
+            moveEnd = true;
+        });
+
+        yield return new WaitUntil(() => moveEnd == true);
+
+        IsAttacking = false;
     }
 
     void SetHpBar()

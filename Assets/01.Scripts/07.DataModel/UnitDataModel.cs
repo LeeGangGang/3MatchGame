@@ -6,10 +6,11 @@ using UnityEngine;
 
 public enum eUnit
 {
-    Lee,
-    Kyoung,
-    Seop,
-    LKS,
+    Wizard_0,
+    Archer_0,
+    Warrior_0,
+    Knight_0,
+
     KDJ,
 }
 

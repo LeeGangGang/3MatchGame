@@ -10,17 +10,24 @@ public class SkillData
     public int Type;
     public eColor Color;
     public int Stack;
-    public int TargetCnt;
 
     public int Value;
     public string Name;
 }
 
-public abstract class ASkill : MonoBehaviour
+public abstract class ASkill
 {
-    public SkillData data = new SkillData();
+    protected SkillData data = new SkillData();
+    protected Unit unit;
+    protected List<Unit> targets;
 
-    public abstract void Enter(List<Unit> target);
+    public virtual void Init(SkillData data, Unit unit)
+    {
+        this.data = data;
+        this.unit = unit;
+    }
+
+    public abstract void Enter(List<Unit> targets);
     public abstract IEnumerator During();
     public abstract void Exit();
 }

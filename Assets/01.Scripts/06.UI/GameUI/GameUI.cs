@@ -7,9 +7,6 @@ using System;
 
 public class GameUI : MonoBehaviour
 {
-    [SerializeField] RectTransform _boardRectTr;
-    public RectTransform BoardRectTr => _boardRectTr;
-
     [SerializeField] UnitSlotUI _unitUI;
     public UnitSlotUI UnitSlotUI => _unitUI;
 

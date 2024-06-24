@@ -9,25 +9,17 @@ public class MyUnit : Unit
 {
     [SerializeField] SpriteRenderer mainSpr;
     
-    public string Name;
     int currLevel;
-
     Dictionary<SkillData, int> curStack = new Dictionary<SkillData, int>();
-    public List<SkillData> skillList = new List<SkillData>();
+    public Dictionary<SkillData, ASkill> skillList = new Dictionary<SkillData, ASkill>();
 
-    string curUseSkillName;
-
-    public int maxHp;
-    public int critical_Per;
-    public int defence;
-
-    public override void Init(string name, int level)
+    public override void Init(int idx, string name, int level)
     {
         Name = name;
         currLevel = level;
 
         anim = GetComponentInChildren<UnitAnim>();
-        anim.Init(2);
+        anim.Init();
 
         var udm = (UnitDataModel)DataModelController.Inst.GetDataModel(eDataModel.UnitDataModel);
         var data = udm.GetUnitData((eUnit)Enum.Parse(typeof(eUnit), name));
@@ -41,7 +33,12 @@ public class MyUnit : Unit
         {
             var sdm = DataModelController.Inst.GetDataModel(eDataModel.SkillDataModel);
             SkillData sd = Util.DeepCopy(((SkillDataModel)sdm).GetData(skillKey));
-            skillList.Add(sd);
+            
+            Type type = Type.GetType(sd.Name);
+            ASkill skill = Activator.CreateInstance(type) as ASkill;
+            skill.Init(sd, this);
+
+            skillList.Add(sd, skill);
             curStack.Add(sd, 0);
         }
     }
@@ -121,13 +118,15 @@ public class MyUnit : Unit
     {
         var sdm = (SkillDataModel)DataModelController.Inst.GetDataModel(eDataModel.SkillDataModel);
         List<SkillData> keys = new List<SkillData>(curStack.Keys);
-        
         for (int idx = 0; idx < keys.Count; idx++)
         {
             SkillData skill = keys[idx];
             if (skill.Color == color)
             {
                 curStack[skill] += stack;
+                if (curStack[skill] > sdm.GetData(skill.key).Stack)
+                    curStack[skill] = sdm.GetData(skill.key).Stack;
+
                 float amount = (float)curStack[skill] / (float)sdm.GetData(skill.key).Stack;
                 UIManager.Inst.Game.UnitSlotUI.SetGaugeFillAmount(this, idx, amount);
             }
@@ -139,39 +138,52 @@ public class MyUnit : Unit
         curStack = null;
 
         CurState = AnimState.Die;
+
+        UIManager.Inst.Game.UnitSlotUI.DieUnitSlot(this);
+
+        GameManager.Inst.OnUnitDieEvent(Name);
     }
 
-    public override void UseSkill(List<Unit> targets, Action onComplete)
+    public override void AttackStart(string skillName, int idx)
     {
+        ASkill skill = skillList.Where(sk => sk.Key.Name == skillName).FirstOrDefault().Value;
+        skill.Enter(targets);
+
+        base.AttackStart(skillName, idx);
+    }
+
+    public override void CheckUseSkill(List<Unit> targets, Action<List<AttackEvent>> onAddAtkEvents)
+    {
+        List<AttackEvent> atkList = new List<AttackEvent>();
+
         var sdm = (SkillDataModel)DataModelController.Inst.GetDataModel(eDataModel.SkillDataModel);
-        int idx = 0;
-        foreach (var stack in curStack)
+        List<SkillData> keys = new List<SkillData>(curStack.Keys);
+        for (int skillIdx = 0; skillIdx < keys.Count; skillIdx++)
         {
-            if (stack.Value >= sdm.GetData(stack.Key.key).Stack)
+            SkillData skill = keys[skillIdx];
+            int maxStack = sdm.GetData(skill.key).Stack;
+            if (curStack[skill] >= maxStack)
             {
-                UIManager.Inst.Game.UnitSlotUI.SetGaugeFillAmount(this, idx, 0);
+                UIManager.Inst.Game.UnitSlotUI.SetGaugeFillAmount(this, skillIdx, curStack[skill] - maxStack);
+
                 this.targets = targets;
-                this.onComplete = onComplete;
-                curUseSkillName = stack.Key.Name;
-                CurState = AnimState.Attack;
+                curStack[skill] -= maxStack;
+
+                AttackEvent atkEvent = new AttackEvent(0, Name, Index, skill.Name, skillIdx);
+                atkList.Add(atkEvent);
             }
-            idx++;
         }
+
+        onAddAtkEvents?.Invoke(atkList);
     }
 
-    public override IEnumerator UseSkillCo()
+    public override IEnumerator UseSkillCo(string skillName)
     {
-        GameObject go = Resources.Load(string.Format("SkillObject/{0}", curUseSkillName)) as GameObject;
-
-        float angle = Mathf.Atan2(this.targets[0].transform.position.y, this.targets[0].transform.position.x) * Mathf.Rad2Deg;
-        float a_angle = angle + UnityEngine.Random.Range(-10, 10);
-        Quaternion rot = Quaternion.AngleAxis(a_angle, Vector3.forward);
-        ASkill skill = Instantiate(go, transform.position, rot).GetComponent<ASkill>();
-
-        skill.Enter(this.targets);
+        ASkill skill = skillList.Where(sk => sk.Key.Name == skillName).FirstOrDefault().Value;
+        
         yield return StartCoroutine(skill.During());
 
-        onComplete?.Invoke();
+        IsAttacking = false;
     }
 
     void SetHpBar()

@@ -9,17 +9,17 @@ public class MyUnitController : UnitController<MyUnit>
 
     public void Start()
     {
-        _unitRoot = this.gameObject.transform;
+        unitRoot = this.gameObject.transform;
     }
 
     public override void Enter()
     {
-        _unitList = new List<Unit>();
+        unitList = new List<Unit>();
     }
 
     public override void Exit()
     {
-        foreach (var unit in _unitList)
+        foreach (var unit in unitList)
         {
             if (unit == null)
                 continue;
@@ -27,14 +27,13 @@ public class MyUnitController : UnitController<MyUnit>
             Destroy(unit.gameObject);
         }
 
-        _unitList = null;
+        unitList = null;
     }
 
     public override bool ChackExtermination()
     {
         bool rtn = false;
-
-        foreach (var unit in _unitList)
+        foreach (var unit in unitList)
         {
             if (unit.CurState == AnimState.Die)
             {
@@ -49,26 +48,26 @@ public class MyUnitController : UnitController<MyUnit>
     public override void InsetUnit(int idx, string unitName, int level)
     {
         GameObject prefab = Resources.Load(string.Format("Unit/MyUnit/{0}", unitName)) as GameObject;
-        MyUnit addUnit = Instantiate(prefab, _createPos[idx], Quaternion.identity, _unitRoot).GetComponent<MyUnit>();
-        addUnit.Init(unitName, level);
+        MyUnit addUnit = Instantiate(prefab, _createPos[idx], Quaternion.identity, unitRoot).GetComponent<MyUnit>();
+        addUnit.Init(idx, unitName, level);
         AddCardCollectionData(addUnit);
         addUnit.Enter();
 
         UIManager.Inst.Game.UnitSlotUI.InitUnitSlot(idx, addUnit);
 
-        _unitList.Add(addUnit);
+        unitList.Add(addUnit);
     }
 
     public override void RemoveUnit(string unitName)
     {
-        Unit removeUnit = _unitList.Find(x => x.name == unitName);
+        Unit removeUnit = unitList.Find(x => x.name == unitName);
 
-        _unitList.Remove(removeUnit);
+        unitList.Remove(removeUnit);
     }
 
     public void AddStack(eColor color, int stack)
     {
-        foreach (MyUnit myUnit in _unitList)
+        foreach (MyUnit myUnit in unitList)
         {
             if (myUnit.IsDie())
                 continue;
@@ -81,7 +80,7 @@ public class MyUnitController : UnitController<MyUnit>
     {
         List<Unit> fullStackUnitList = new List<Unit>();
 
-        foreach (MyUnit myUnit in _unitList)
+        foreach (MyUnit myUnit in unitList)
         {
             if (myUnit.IsDie())
                 continue;
@@ -97,7 +96,7 @@ public class MyUnitController : UnitController<MyUnit>
     {
         List<Unit> liveUnitList = new List<Unit>();
 
-        foreach (MyUnit myUnit in _unitList)
+        foreach (MyUnit myUnit in unitList)
         {
             if (myUnit.IsDie() == false)
                 liveUnitList.Add(myUnit);
@@ -119,8 +118,8 @@ public class MyUnitController : UnitController<MyUnit>
             switch (kind)
             {
                 case eCardKindStat.Atk:
-                    unit.skillList[0].Value = Mathf.RoundToInt(unit.skillList[0].Value * (1f + ((float)value / 100f)));
-                    unit.skillList[1].Value = Mathf.RoundToInt(unit.skillList[1].Value * (1f + ((float)value / 100f)));
+                    foreach (var skillData in unit.skillList.Keys)
+                        skillData.Value = Mathf.RoundToInt(skillData.Value * (1f + ((float)value / 100f)));
                     break;
                 case eCardKindStat.Hp:
                     unit.maxHp = Mathf.RoundToInt(unit.maxHp * (1f + ((float)value / 100f)));
@@ -143,7 +142,7 @@ public class MyUnitController : UnitController<MyUnit>
             if (value == 0)
                 continue;
 
-            foreach (var skillData in unit.skillList)
+            foreach (var skillData in unit.skillList.Keys)
             {
                 if ((int)skillData.Color == (int)kind)
                     skillData.Stack = Mathf.RoundToInt(skillData.Stack * (1f - ((float)value / 100f)));

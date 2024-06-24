@@ -21,9 +21,6 @@ public abstract class AMode : MonoBehaviour
     public abstract void Enter();
     public abstract void Exit();
     public abstract void GameStart();
-
-    public abstract void CheckingGameEnd();
-    protected abstract IEnumerator CheckGameEnd();
     public abstract void Pause();
     public abstract void Restart();
 
@@ -43,4 +40,8 @@ public abstract class AMode : MonoBehaviour
     {
 
     }
+
+    public abstract void AddAttackEvent(AttackEvent data);
+    public abstract void RemoveAttackEvent(AttackEvent data);
+    public abstract void RemoveDieAttackEvent(List<AttackEvent> curDatas, List<AttackEvent> dieDatas);
 }

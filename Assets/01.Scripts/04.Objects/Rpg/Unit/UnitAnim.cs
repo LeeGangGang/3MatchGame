@@ -6,16 +6,15 @@ public class UnitAnim : MonoBehaviour
 {
     private Animator anim = new Animator();
     private string animTrigger = "AnimState";
-    int atkCnt = 1;
 
     private Unit unit;
 
-    public void Init(int atkCnt)
+    public string skillName;
+
+    public void Init()
     {
         anim = GetComponent<Animator>();
         unit = GetComponentInParent<Unit>();
-
-        this.atkCnt = atkCnt;
     }
 
     void Idle()
@@ -30,14 +29,12 @@ public class UnitAnim : MonoBehaviour
 
     void Attack()
     {
-        int randomAtt = -1;
-        randomAtt = Random.Range(0, atkCnt);
-        anim.SetInteger("Attack", randomAtt);
+        anim.SetInteger("Attack", 0);
     }
 
     void Skill()
     {
-        anim.SetTrigger("Skill");
+        anim.SetInteger("Attack", 1);
     }
 
     void Hit()
@@ -54,7 +51,7 @@ public class UnitAnim : MonoBehaviour
 
     void AttackStart()
     {
-        StartCoroutine(unit.UseSkillCo());
+        StartCoroutine(unit.UseSkillCo(skillName));
     }
 
     void ActionAnimEnd()

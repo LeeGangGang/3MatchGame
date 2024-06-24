@@ -5,20 +5,25 @@ using UnityEngine.UI;
 
 public class UnitSlot : MonoBehaviour
 {
-    [SerializeField] Image _unitImg;
-    [SerializeField] Image[] _gaugeImgs;
+    [SerializeField] Image unitImg;
+    [SerializeField] Image[] gaugeImgs;
+    [SerializeField] Image unitDieImg;
 
     public void Enter(MyUnit unit)
     {
-        _unitImg.sprite = AtlasManager.Inst.GetSprite(eAtlasType.Unit, unit.Name);
+        SetActiveDieImage(false);
+
+        unitImg.sprite = AtlasManager.Inst.GetSprite(eAtlasType.Unit, unit.Name);
 
         var sdm = (SkillDataModel)DataModelController.Inst.GetDataModel(eDataModel.SkillDataModel);
-        for (int idx = 0; idx < unit.skillList.Count; idx++)
+        int idx = 0;
+        foreach (var skillData in unit.skillList.Keys)
         {
-            var skillKey = unit.skillList[idx].key;
+            var skillKey = skillData.key;
             eColor color = sdm.GetData(skillKey).Color;
-            _gaugeImgs[idx].fillAmount = 0f;
-            _gaugeImgs[idx].color = GetColorCode(color);
+            gaugeImgs[idx].fillAmount = 0f;
+            gaugeImgs[idx].color = GetColorCode(color);
+            idx++;
         }
     }
 
@@ -29,7 +34,12 @@ public class UnitSlot : MonoBehaviour
 
     public void SetGaugeFillAmount(int idx, float amount)
     {
-        _gaugeImgs[idx].fillAmount = amount;
+        gaugeImgs[idx].fillAmount = amount;
+    }
+
+    public void SetActiveDieImage(bool isDie)
+    {
+        unitDieImg.gameObject.SetActive(isDie);
     }
 
     Color GetColorCode(eColor color)

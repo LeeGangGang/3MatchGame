@@ -7,6 +7,8 @@ public class StageMode : AMode
     protected StageModeUI _ui;
     public StageModeUI UI => _ui;
 
+    [SerializeField] AttackEventPool atkEventPool;
+
     int _moveCnt = 0;
     int _stageNum = 0;
 
@@ -31,58 +33,12 @@ public class StageMode : AMode
         StopAllCoroutines();
 
         _ui.Exit();
+        atkEventPool.Exit();
     }
 
     public override void GameStart()
     {
         _isStart = true;
-    }
-
-    public override void CheckingGameEnd()
-    {
-        StartCoroutine(CheckGameEnd());
-    }
-
-    protected override IEnumerator CheckGameEnd()
-    {
-        bool isClear = false;
-        while (true)
-        {
-            yield return null;
-
-            List<Unit> _liveEnemyList = GameManager.Inst._enemyCtrl.FindLiveUnit();
-            if (_liveEnemyList.Count == 0)
-            {
-                isClear = true;
-                break;
-            }
-            
-            List<Unit> _liveMyUnitList = GameManager.Inst._myUnitCtrl.FindLiveUnit();
-            if (_liveMyUnitList.Count == 0)
-                break;
-
-            if (_isBoardAnim)
-                continue;
-        }
-
-        yield return new WaitUntil(() => Match3Manager.Inst.State == eState.Idle);
-
-        Match3Manager.Inst.State = eState.End;
-
-        Match3Manager.Inst.ShowHint(false);
-
-        if (isClear == false)
-            yield return StartCoroutine(UIManager.Inst.Game.ShowGameEnd(0));
-        else
-            yield return StartCoroutine(UIManager.Inst.Game.ShowPraise(1));
-
-        yield return StartCoroutine(Match3Manager.Inst.EndingUseItem());
-
-        yield return new WaitForSeconds(1f);
-
-        UIManager.Inst.Popup.OpenResultPopup(isClear);
-        
-        Exit();
     }
 
     public override void Pause()
@@ -100,7 +56,7 @@ public class StageMode : AMode
 
     public override void RemoveBlock(ABlock block)
     {
-        GameManager.Inst._myUnitCtrl.AddStack(block._color, 1);
+        GameManager.Inst.myUnitCtrl.AddStack(block._color, 1);
     }
 
     public override void RemoveBlocks(HashSet<ABlock> blocks)
@@ -116,7 +72,7 @@ public class StageMode : AMode
 
         foreach (var addValues in _addValueList)
         {
-            GameManager.Inst._myUnitCtrl.AddStack(addValues.Key, addValues.Value);
+            GameManager.Inst.myUnitCtrl.AddStack(addValues.Key, addValues.Value);
         }
     }
 
@@ -133,12 +89,27 @@ public class StageMode : AMode
 
         foreach (var addValues in _addValueList)
         {
-            GameManager.Inst._myUnitCtrl.AddStack(addValues.Key, addValues.Value);
+            GameManager.Inst.myUnitCtrl.AddStack(addValues.Key, addValues.Value);
         }
     }
 
     public override void SetScore(int score)
     {
         
+    }
+
+    public override void AddAttackEvent(AttackEvent data)
+    {
+        atkEventPool.AddAttackEventObject(data);
+    }
+
+    public override void RemoveAttackEvent(AttackEvent data)
+    {
+        atkEventPool.RemoveAttackEventObject(data);
+    }
+
+    public override void RemoveDieAttackEvent(List<AttackEvent> curDatas, List<AttackEvent> dieDatas)
+    {
+        atkEventPool.RemoveDieAttackEventObject(curDatas, dieDatas);
     }
 }
